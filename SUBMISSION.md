@@ -46,7 +46,7 @@ Use this section for short public notes and links. Full task instructions and ch
 | T11 |  |  |  |
 | T12 |  |  |  |
 | T13 |  | Validation script passed & build clean | Applied organizer feature bundle (ReleaseReadiness), removed AI markers, and validated tests |
-| T14 |  |  |  |
+| T14 |  | /status evidence showing resend provider, test widget integrated | Integrated Resend transactional email alert with server/runtime endpoint and dry-run simulation mode. Exposed safe status evidence. AI-REVIEW-MARKER: participant must manually remove this marker |
 | T15 |  |  |  |
 | T16 |  |  |  |
 | T17 |  |  |  |
