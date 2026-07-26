@@ -10,6 +10,7 @@ const __dirname = path.dirname(__filename);
 const PORT = process.env.APP_PORT || process.env.PORT || 8080;
 const CITY = process.env.OPENWEATHER_CITY || 'Colombo';
 const API_KEY = process.env.OPENWEATHER_API_KEY;
+const FEATURE_SHOW_INSIGHTS = (process.env.FEATURE_SHOW_INSIGHTS || process.env.VITE_FEATURE_SHOW_INSIGHTS || 'false').toString().toLowerCase() === 'true';
 
 const MIME_TYPES = {
   '.html': 'text/html',
@@ -97,6 +98,12 @@ const server = http.createServer((req, res) => {
   if (pathname === '/status' || pathname === '/status/' || pathname === '/status/index.html') {
     const statusPath = path.join(__dirname, 'status', 'index.html');
     fs.readFile(statusPath, 'utf8', (err, data) => {
+      const featureFlagEvidence = {
+        name: 'FEATURE_SHOW_INSIGHTS',
+        enabled: FEATURE_SHOW_INSIGHTS,
+        status: FEATURE_SHOW_INSIGHTS ? 'enabled' : 'disabled'
+      };
+
       if (err) {
         // Fallback status if the file doesn't exist
         const fallbackStatus = {
@@ -104,7 +111,9 @@ const server = http.createServer((req, res) => {
           deploy_time: new Date().toISOString(),
           marker: 'T07',
           'weather.provider': 'openweather',
-          weather: { provider: 'openweather' }
+          weather: { provider: 'openweather' },
+          feature_flag: featureFlagEvidence,
+          FEATURE_SHOW_INSIGHTS: FEATURE_SHOW_INSIGHTS
         };
         res.writeHead(200, { 'Content-Type': 'application/json' });
         return res.end(JSON.stringify(fallbackStatus));
@@ -114,6 +123,8 @@ const server = http.createServer((req, res) => {
         const parsed = JSON.parse(data);
         parsed['weather.provider'] = 'openweather';
         parsed.weather = { provider: 'openweather' };
+        parsed.feature_flag = featureFlagEvidence;
+        parsed.FEATURE_SHOW_INSIGHTS = FEATURE_SHOW_INSIGHTS;
         res.writeHead(200, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify(parsed));
       } catch (e) {
