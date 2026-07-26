@@ -45,5 +45,5 @@ jobs:
       - name: Upload dist artifact
         uses: actions/upload-artifact@v4
         with:
-          name: site-dist-${{ github.sha }}
+          name: ${{ github.sha }}
           path: team-site/dist
