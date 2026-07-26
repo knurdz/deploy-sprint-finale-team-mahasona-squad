@@ -2,6 +2,7 @@ name: CI
 
 on:
   pull_request:
+  workflow_dispatch:
   push:
     branches:
       - main
@@ -29,6 +30,12 @@ jobs:
           VITE_PUBLIC_URL: ${{ vars.PUBLIC_URL || vars.DOMAIN_PUBLIC_URL || secrets.PUBLIC_URL || vars.IP_PUBLIC_URL }}
         run: npm run build
         working-directory: team-site
+
+      - name: Write safe status evidence
+        run: |
+          mkdir -p team-site/dist/status team-site/dist/health
+          printf 'ok' > team-site/dist/health/index.html
+          printf '{"task":"T01","commit":"%s"}' "$GITHUB_SHA" > team-site/dist/status/index.html
 
       - name: Upload dist artifact
         uses: actions/upload-artifact@v4
