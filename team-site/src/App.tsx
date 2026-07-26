@@ -11,6 +11,7 @@ import {
 } from 'lucide-react';
 import { CourseCard } from './components/CourseCard';
 import { DeadlineBoard } from './components/DeadlineBoard';
+import { LearningVelocity } from './components/LearningVelocity';
 import { StatCard } from './components/StatCard';
 import { courses } from './data/courses';
 import { deadlineCards } from './data/deadlines';
@@ -95,6 +96,8 @@ export function App() {
             <StatCard key={stat.label} stat={stat} />
           ))}
         </section>
+
+        <LearningVelocity courses={courses} />
 
         <section className="contentGrid">
           <div className="panel" id="courses">
