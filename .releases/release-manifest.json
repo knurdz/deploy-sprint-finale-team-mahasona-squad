@@ -1,0 +1,9 @@
+{
+  "task": "T10",
+  "release": "release-local",
+  "active": true,
+  "previousRelease": "none",
+  "healthChecked": true,
+  "trafficSwitched": true,
+  "notes": "Candidate release passed health checks and became the active release."
+}
