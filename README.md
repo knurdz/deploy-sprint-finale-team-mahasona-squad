@@ -27,3 +27,4 @@ The deploy artifact is `team-site/dist/`.
 - Do not commit real secrets, API keys, tokens, `.env` files, or screenshots containing credentials.
 - AI tools may be used for learning and drafting, but task commits, pushes, approvals, and merges must be done by real team-member GitHub accounts.
 - Do not edit assistant instruction files such as `AGENTS.md` or PR-agent notes unless organizers explicitly instruct you.
+.

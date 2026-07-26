@@ -4,8 +4,11 @@ Complete this file on `main` as tasks are completed. Do not paste secrets, priva
 
 ## Team
 
-- Team name:
-- Team members:
+- Team name: Mahasona Squad
+- Team members: 
+    - Sulashee Ayodhya
+    - Pawani Kaushika
+    - Tharana Neja
 - Live IP URL:
 - Assigned domain URL:
 - Repository URL:
