@@ -1,6 +1,5 @@
 import { useState } from 'react';
 
-// AI-REVIEW-MARKER: participant must manually remove this marker
 export function ContactSupport() {
   const [result, setResult] = useState('');
   const accessKey = import.meta.env.VITE_WEB3FORMS_ACCESS_KEY?.trim();
