@@ -1,3 +1,4 @@
+# AI-REVIEW-MARKER: participant must manually remove this marker
 name: Request Organizer Deploy
 
 on:
@@ -11,6 +12,7 @@ on:
 
 permissions:
   contents: read
+  actions: read
 
 concurrency:
   group: request-organizer-deploy
@@ -37,14 +39,28 @@ jobs:
           WORKFLOW_RUN_BRANCH: ${{ github.event.workflow_run.head_branch }}
           WORKFLOW_RUN_ID: ${{ github.event.workflow_run.id }}
           MANUAL_SHA: ${{ github.sha }}
-          MANUAL_RUN_ID: ${{ github.run_id }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           set -euo pipefail
 
           if [ "$EVENT_NAME" = "workflow_dispatch" ]; then
             sha="$MANUAL_SHA"
             branch="main"
-            source_run_id="$MANUAL_RUN_ID"
+            
+            echo "Querying CI workflow run for SHA: $sha..."
+            source_run_id=$(gh run list \
+              --workflow "CI" \
+              --commit "$sha" \
+              --status "success" \
+              --limit 1 \
+              --json databaseId \
+              --jq '.[0].databaseId')
+            
+            if [ -z "$source_run_id" ] || [ "$source_run_id" = "null" ]; then
+              echo "Error: No successful CI run found for commit $sha. Please ensure CI has run successfully before deploying."
+              exit 1
+            fi
+            echo "Found CI workflow run ID: $source_run_id"
           else
             sha="$WORKFLOW_RUN_SHA"
             branch="$WORKFLOW_RUN_BRANCH"
