@@ -1,0 +1,12 @@
+node_modules
+dist
+portal/.portal-data
+.DS_Store
+.env
+.env.*
+!.env.local.example
+!portal/.env.local.example
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*

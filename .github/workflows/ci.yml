@@ -1,0 +1,37 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+          cache-dependency-path: team-site/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+        working-directory: team-site
+
+      - name: Build
+        env:
+          VITE_PUBLIC_URL: ${{ vars.PUBLIC_URL || vars.DOMAIN_PUBLIC_URL || secrets.PUBLIC_URL || vars.IP_PUBLIC_URL }}
+        run: npm run build
+        working-directory: team-site
+
+      - name: Upload dist artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: site-dist-${{ github.sha }}
+          path: team-site/dist
