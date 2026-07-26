@@ -83,9 +83,9 @@ jobs:
           import os
 
           payload = {
-              "event_type": "team-01-main-merged",
+              "event_type": "team-mahasona-squad-main-merged",
               "client_payload": {
-                  "team": "team01",
+                  "team": "mahasona-squad",
                   "repo": os.environ["TEAM_REPO"],
                   "sha": os.environ["TEAM_SHA"],
                   "branch": os.environ["TEAM_BRANCH"],
