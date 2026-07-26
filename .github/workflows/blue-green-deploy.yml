@@ -12,6 +12,10 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: deploy-sprint-mahasona-squad.lock
+  cancel-in-progress: false
+
 jobs:
   blue-green-release:
     if: >-

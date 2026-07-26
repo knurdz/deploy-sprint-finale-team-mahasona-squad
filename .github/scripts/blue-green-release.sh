@@ -21,7 +21,13 @@ if [ -L "$ROOT_DIR/current" ]; then
   previous_release=$(basename "$(readlink "$ROOT_DIR/current")")
 fi
 
-rm -rf "$candidate_dir"
+if [ -d "$candidate_dir" ]; then
+  echo "Notice: Target release directory $candidate_dir already exists."
+  echo "This is a repeat deploy. Safely replacing the existing target..."
+  rm -rf "$candidate_dir"
+else
+  echo "Creating new candidate directory: $candidate_dir"
+fi
 mkdir -p "$candidate_dir"
 cp -R "$BUILD_DIR"/. "$candidate_dir"/
 
