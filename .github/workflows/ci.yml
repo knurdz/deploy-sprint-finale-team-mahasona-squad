@@ -47,3 +47,12 @@ jobs:
         with:
           name: ${{ github.sha }}
           path: team-site/dist
+
+      - name: Generate PR Preview Workflow Summary
+        if: github.event_name == 'pull_request'
+        run: |
+          echo "## 🚀 PR Preview Build Summary" >> $GITHUB_STEP_SUMMARY
+          echo "- **Status:** Build Succeeded ✅" >> $GITHUB_STEP_SUMMARY
+          echo "- **Artifact SHA:** \`${{ github.sha }}\`" >> $GITHUB_STEP_SUMMARY
+          echo "- **Production Deployment:** Isolated (main branch only)" >> $GITHUB_STEP_SUMMARY
+
