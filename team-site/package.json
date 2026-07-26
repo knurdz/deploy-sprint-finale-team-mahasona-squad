@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc --noEmit && vite build",
-    "preview": "vite preview",
+    "preview": "node server.js",
+    "start": "node server.js",
     "lint": "tsc --noEmit"
   },
   "dependencies": {

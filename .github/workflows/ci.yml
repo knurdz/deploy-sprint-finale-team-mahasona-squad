@@ -38,7 +38,9 @@ jobs:
           mkdir -p team-site/dist/status team-site/dist/health
           printf 'ok' > team-site/dist/health/index.html
           DEPLOY_TIME=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
-          printf '{"team":"%s","commit":"%s","release":"%s","deploy_time":"%s","marker":"T01"}' "$TEAM_SLUG" "$GITHUB_SHA" "$GITHUB_RUN_ID" "$DEPLOY_TIME" > team-site/dist/status/index.html
+          printf '{"team":"%s","commit":"%s","release":"%s","deploy_time":"%s","marker":"T07"}' "$TEAM_SLUG" "$GITHUB_SHA" "$GITHUB_RUN_ID" "$DEPLOY_TIME" > team-site/dist/status/index.html
+          cp team-site/server.js team-site/dist/
+          cp team-site/package.json team-site/dist/
 
       - name: Upload dist artifact
         uses: actions/upload-artifact@v4
