@@ -14,7 +14,7 @@ permissions:
   actions: read
 
 concurrency:
-  group: request-organizer-deploy
+  group: deploy-sprint-mahasona-squad.lock
   cancel-in-progress: false
 
 jobs:
