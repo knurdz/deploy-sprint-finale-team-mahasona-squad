@@ -18,8 +18,14 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "20"
-          cache: npm
-          cache-dependency-path: team-site/package-lock.json
+
+      - name: Cache npm dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-npm-${{ hashFiles('team-site/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-npm-
 
       - name: Install dependencies
         run: npm ci
@@ -48,11 +54,12 @@ jobs:
           name: ${{ github.sha }}
           path: team-site/dist
 
-      - name: Generate PR Preview Workflow Summary
-        if: github.event_name == 'pull_request'
+      - name: Generate Workflow Summary & Cache Evidence
         run: |
-          echo "## 🚀 PR Preview Build Summary" >> $GITHUB_STEP_SUMMARY
+          echo "## 🚀 CI Build & Cache Summary" >> $GITHUB_STEP_SUMMARY
           echo "- **Status:** Build Succeeded ✅" >> $GITHUB_STEP_SUMMARY
-          echo "- **Artifact SHA:** \`${{ github.sha }}\`" >> $GITHUB_STEP_SUMMARY
+          echo "- **Commit SHA:** \`${{ github.sha }}\`" >> $GITHUB_STEP_SUMMARY
+          echo "- **Dependency Cache Key Source:** \`team-site/package-lock.json\`" >> $GITHUB_STEP_SUMMARY
+          echo "- **Install Command:** \`npm ci\` (Deterministic Lockfile Install)" >> $GITHUB_STEP_SUMMARY
           echo "- **Production Deployment:** Isolated (main branch only)" >> $GITHUB_STEP_SUMMARY
 
