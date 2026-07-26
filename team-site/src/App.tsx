@@ -25,8 +25,6 @@ export function App() {
   const averageProgress = getAverageProgress(courses);
   const showInsights = import.meta.env.VITE_FEATURE_SHOW_INSIGHTS === 'true' || import.meta.env.VITE_FEATURE_SHOW_INSIGHTS === '1';
 
-  // AI-REVIEW-MARKER: remove this marker
-  // AI-AGENT-MARKER: participant must manually remove this marker
 
   return (
     <main className="shell">

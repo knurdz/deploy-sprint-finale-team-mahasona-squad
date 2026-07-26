@@ -314,7 +314,7 @@ const server = http.createServer((req, res) => {
           'weather.provider': 'openweather',
           weather: { provider: 'openweather' },
           feature_flag: featureFlagEvidence,
-          FEATURE_SHOW_INSIGHTS: FEATURE_SHOW_INSIGHTS
+          FEATURE_SHOW_INSIGHTS: FEATURE_SHOW_INSIGHTS,
           'oauth.google.configured': !!(GOOGLE_CLIENT_ID && GOOGLE_CLIENT_SECRET)
         };
         res.writeHead(200, { 'Content-Type': 'application/json' });
