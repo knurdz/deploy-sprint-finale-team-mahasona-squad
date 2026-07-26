@@ -1,5 +1,3 @@
-# AI-REVIEW-MARKER: participant must manually remove this marker
-
 # Stage 1: Build the team-site application
 FROM node:20-slim AS builder
 
