@@ -47,6 +47,7 @@ jobs:
           DEPLOY_TIME=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
           printf '{"team":"%s","commit":"%s","release":"%s","deploy_time":"%s","marker":"T07"}' "$TEAM_SLUG" "$GITHUB_SHA" "$GITHUB_RUN_ID" "$DEPLOY_TIME" > team-site/dist/status/index.html
           cp team-site/server.js team-site/dist/
+          cp team-site/auth.js team-site/dist/
           cp team-site/package.json team-site/dist/
 
       - name: Upload dist artifact
