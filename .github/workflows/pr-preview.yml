@@ -1,0 +1,93 @@
+name: PR Preview Evidence
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pull-requests: write
+  actions: read
+
+jobs:
+  preview:
+    name: Build & Publish PR Preview Evidence
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+          cache-dependency-path: team-site/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+        working-directory: team-site
+
+      - name: Build PR Version
+        env:
+          VITE_PUBLIC_URL: ${{ vars.PUBLIC_URL || vars.DOMAIN_PUBLIC_URL || secrets.PUBLIC_URL || vars.IP_PUBLIC_URL }}
+        run: npm run build
+        working-directory: team-site
+
+      - name: Write safe status evidence
+        env:
+          TEAM_SLUG: ${{ vars.TEAM_SLUG || 'placeholder-team-slug' }}
+        run: |
+          mkdir -p team-site/dist/status team-site/dist/health
+          printf 'ok' > team-site/dist/health/index.html
+          DEPLOY_TIME=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+          printf '{"team":"%s","commit":"%s","release":"%s","deploy_time":"%s","marker":"PR-PREVIEW"}' "$TEAM_SLUG" "$GITHUB_SHA" "$GITHUB_RUN_ID" "$DEPLOY_TIME" > team-site/dist/status/index.html
+          cp team-site/server.js team-site/dist/
+          cp team-site/package.json team-site/dist/
+
+      - name: Upload preview artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: pr-preview-${{ github.event.pull_request.number || github.sha }}
+          path: team-site/dist
+
+      - name: Generate PR Preview Workflow Summary
+        run: |
+          echo "## 🚀 PR Preview Build Evidence" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Property | Value |" >> $GITHUB_STEP_SUMMARY
+          echo "| --- | --- |" >> $GITHUB_STEP_SUMMARY
+          echo "| **Status** | ✅ Succeeded |" >> $GITHUB_STEP_SUMMARY
+          echo "| **PR Number** | #${{ github.event.pull_request.number || 'N/A' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| **Commit SHA** | \`${{ github.sha }}\` |" >> $GITHUB_STEP_SUMMARY
+          echo "| **Preview Artifact** | \`pr-preview-${{ github.event.pull_request.number || github.sha }}\` |" >> $GITHUB_STEP_SUMMARY
+          echo "| **Environment** | PR Preview (Isolated from Production) |" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "> Production deployment is kept separate and only triggers upon merging into the \`main\` branch." >> $GITHUB_STEP_SUMMARY
+
+      - name: Post PR Preview Comment
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const prNumber = context.issue.number;
+            const artifactName = `pr-preview-${prNumber}`;
+            const runUrl = `https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;
+            const body = `### 🔍 PR Preview Evidence Published\n\n` +
+              `- **Status:** Build Succeeded ✅\n` +
+              `- **Commit:** \`${context.sha}\`\n` +
+              `- **Preview Artifact Name:** \`${artifactName}\`\n` +
+              `- **Workflow Run:** [View Actions Run](${runUrl})\n\n` +
+              `> *Note: Production deployment remains separate and will only trigger after merging to \`main\`.*`;
+            
+            try {
+              await github.rest.issues.createComment({
+                issue_number: prNumber,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body: body
+              });
+            } catch (err) {
+              core.info(`Could not post PR comment: ${err.message}`);
+            }
