@@ -10,6 +10,8 @@
     "lint": "npm --prefix team-site run lint",
     "team:dev": "npm --prefix team-site run dev",
     "team:build": "npm --prefix team-site run build",
-    "team:lint": "npm --prefix team-site run lint"
+    "team:lint": "npm --prefix team-site run lint",
+    "test": "npm --prefix team-site run test",
+    "team:test": "npm --prefix team-site run test"
   }
 }

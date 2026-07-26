@@ -19,6 +19,7 @@ import { deadlineCards } from './data/deadlines';
 import { sprintStats } from './data/stats';
 import { getAverageProgress } from './utils/metrics';
 import { WeatherWidget } from './components/WeatherWidget';
+import { ReleaseReadiness } from './components/ReleaseReadiness';
 
 export function App() {
   const averageProgress = getAverageProgress(courses);
@@ -122,6 +123,7 @@ export function App() {
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
             <DeadlineBoard deadlines={deadlineCards} />
+            <ReleaseReadiness />
             <WeatherWidget />
           </div>
         </section>
