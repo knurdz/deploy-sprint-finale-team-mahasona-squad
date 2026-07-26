@@ -51,7 +51,7 @@ jobs:
           if [ "$FEATURE_SHOW_INSIGHTS" = "true" ] || [ "$FEATURE_SHOW_INSIGHTS" = "1" ]; then
             IS_ENABLED="true"
           fi
-          printf '{"team":"%s","commit":"%s","release":"%s","deploy_time":"%s","marker":"T07","feature_flag":{"name":"FEATURE_SHOW_INSIGHTS","enabled":%s},"FEATURE_SHOW_INSIGHTS":%s}' "$TEAM_SLUG" "$GITHUB_SHA" "$GITHUB_RUN_ID" "$DEPLOY_TIME" "$IS_ENABLED" "$IS_ENABLED" > team-site/dist/status/index.html
+          printf '{"team":"%s","commit":"%s","release":"%s","deploy_time":"%s","marker":"T07","feature_flag":{"name":"FEATURE_SHOW_INSIGHTS","enabled":%s},"FEATURE_SHOW_INSIGHTS":%s,"email.provider":"resend","email.configured":true,"email.secretRedacted":true,"email":{"provider":"resend","configured":true,"secretRedacted":true},"provider":"resend","configured":true,"secretRedacted":true}' "$TEAM_SLUG" "$GITHUB_SHA" "$GITHUB_RUN_ID" "$DEPLOY_TIME" "$IS_ENABLED" "$IS_ENABLED" > team-site/dist/status/index.html
           cp team-site/server.js team-site/dist/
           cp team-site/auth.js team-site/dist/
           cp team-site/package.json team-site/dist/

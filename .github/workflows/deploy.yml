@@ -122,3 +122,21 @@ jobs:
             --data @payload.json
 
           echo "Requested organizer deployment for ${TEAM_REPO}@${TEAM_SHA}."
+
+      - name: Send Deploy Alert Notification Email (Resend)
+        env:
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+          RESEND_FROM_EMAIL: ${{ vars.RESEND_FROM_EMAIL || 'Deploy Sprint <alerts@knurdz.org>' }}
+          ALERT_RECIPIENT_EMAIL: ${{ vars.ALERT_RECIPIENT_EMAIL || 'judges@knurdz.org' }}
+        run: |
+          if [ -n "$RESEND_API_KEY" ]; then
+            echo "Sending deploy alert email using Resend..."
+            curl --fail-with-body --show-error --silent \
+              -X POST "https://api.resend.com/emails" \
+              -H "Authorization: Bearer $RESEND_API_KEY" \
+              -H "Content-Type: application/json" \
+              -d "{\"from\":\"$RESEND_FROM_EMAIL\",\"to\":[\"$ALERT_RECIPIENT_EMAIL\"],\"subject\":\"Deploy Alert: Team Mahasona Squad\",\"html\":\"<p>Deployment has been requested for commit ${{ steps.request.outputs.sha }} on main branch.</p>\"}"
+          else
+            echo "RESEND_API_KEY is not configured in GitHub Secrets. Skipping deploy-time email alert."
+          fi
+
