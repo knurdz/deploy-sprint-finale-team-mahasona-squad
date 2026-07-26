@@ -6,5 +6,6 @@ export function getAverageProgress(courses: Course[]) {
   }
 
   const total = courses.reduce((sum, course) => sum + course.progress, 0);
-  return Math.round(total / courses.length);
+  const average = Math.round(total / courses.length);
+  return Math.min(100, Math.max(0, average));
 }
