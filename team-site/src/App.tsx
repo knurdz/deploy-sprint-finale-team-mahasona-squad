@@ -59,8 +59,6 @@ export function App() {
         </div>
       </aside>
 
-      // AI-REVIEW-MARKER: remove this marker
-      // AI-AGENT-MARKER: participant must manually remove this marker
 
       <section className="workspace">
         <header className="topbar">
