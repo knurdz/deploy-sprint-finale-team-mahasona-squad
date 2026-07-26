@@ -1,5 +1,5 @@
 {
-  "name": "deploy-sprint-finale-test-repo",
+  "name": "deploy-sprint-finale-team",
   "version": "1.0.0",
   "private": true,
   "type": "module",
@@ -7,13 +7,9 @@
     "dev": "npm --prefix team-site run dev",
     "build": "npm --prefix team-site run build",
     "preview": "npm --prefix team-site run preview",
-    "lint": "npm --prefix team-site run lint && npm --prefix portal run lint",
+    "lint": "npm --prefix team-site run lint",
     "team:dev": "npm --prefix team-site run dev",
     "team:build": "npm --prefix team-site run build",
-    "team:lint": "npm --prefix team-site run lint",
-    "portal": "npm --prefix portal run portal",
-    "portal:build": "npm --prefix portal run build",
-    "portal:lint": "npm --prefix portal run lint",
-    "validate:docs": "node organizer/validate-service-integrations.mjs --docs-only"
+    "team:lint": "npm --prefix team-site run lint"
   }
 }
