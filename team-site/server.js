@@ -40,6 +40,7 @@ for (const envPath of envPaths) {
 const PORT = process.env.APP_PORT || process.env.PORT || 8080;
 const CITY = process.env.OPENWEATHER_CITY || 'Colombo';
 const API_KEY = process.env.OPENWEATHER_API_KEY;
+const FEATURE_SHOW_INSIGHTS = (process.env.FEATURE_SHOW_INSIGHTS || process.env.VITE_FEATURE_SHOW_INSIGHTS || 'false').toString().toLowerCase() === 'true';
 
 const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
 const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET;
@@ -298,6 +299,12 @@ const server = http.createServer((req, res) => {
   if (pathname === '/status' || pathname === '/status/' || pathname === '/status/index.html') {
     const statusPath = path.join(__dirname, 'status', 'index.html');
     fs.readFile(statusPath, 'utf8', (err, data) => {
+      const featureFlagEvidence = {
+        name: 'FEATURE_SHOW_INSIGHTS',
+        enabled: FEATURE_SHOW_INSIGHTS,
+        status: FEATURE_SHOW_INSIGHTS ? 'enabled' : 'disabled'
+      };
+
       if (err) {
         // Fallback status if the file doesn't exist
         const fallbackStatus = {
@@ -306,6 +313,8 @@ const server = http.createServer((req, res) => {
           marker: 'T07',
           'weather.provider': 'openweather',
           weather: { provider: 'openweather' },
+          feature_flag: featureFlagEvidence,
+          FEATURE_SHOW_INSIGHTS: FEATURE_SHOW_INSIGHTS
           'oauth.google.configured': !!(GOOGLE_CLIENT_ID && GOOGLE_CLIENT_SECRET)
         };
         res.writeHead(200, { 'Content-Type': 'application/json' });
@@ -316,6 +325,8 @@ const server = http.createServer((req, res) => {
         const parsed = JSON.parse(data);
         parsed['weather.provider'] = 'openweather';
         parsed.weather = { provider: 'openweather' };
+        parsed.feature_flag = featureFlagEvidence;
+        parsed.FEATURE_SHOW_INSIGHTS = FEATURE_SHOW_INSIGHTS;
         parsed['oauth.google.configured'] = !!(GOOGLE_CLIENT_ID && GOOGLE_CLIENT_SECRET);
         res.writeHead(200, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify(parsed));
