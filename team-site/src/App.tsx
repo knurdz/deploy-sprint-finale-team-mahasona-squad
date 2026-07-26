@@ -9,6 +9,7 @@ import {
   ShieldCheck,
   Users,
 } from 'lucide-react';
+import { ContactSupport } from './components/ContactSupport';
 import { CourseCard } from './components/CourseCard';
 import { DeadlineBoard } from './components/DeadlineBoard';
 import { LearningVelocity } from './components/LearningVelocity';
@@ -107,6 +108,7 @@ export function App() {
         {showInsights && <LearningVelocity courses={courses} />}
 
         <section className="contentGrid">
+          <ContactSupport />
           <div className="panel" id="courses">
             <div className="panelHeader">
               <div>

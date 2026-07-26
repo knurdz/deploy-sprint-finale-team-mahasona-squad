@@ -19,6 +19,7 @@ RUN npm run build
 RUN mkdir -p dist/status dist/health && \
     echo "ok" > dist/health/index.html && \
     cp server.js dist/ && \
+    cp auth.js dist/ && \
     cp package.json dist/
 
 # Stage 2: Serve the application

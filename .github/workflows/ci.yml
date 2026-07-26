@@ -35,6 +35,7 @@ jobs:
         env:
           VITE_PUBLIC_URL: ${{ vars.PUBLIC_URL || vars.DOMAIN_PUBLIC_URL || secrets.PUBLIC_URL || vars.IP_PUBLIC_URL }}
           VITE_FEATURE_SHOW_INSIGHTS: ${{ secrets.FEATURE_SHOW_INSIGHTS || vars.FEATURE_SHOW_INSIGHTS || 'false' }}
+          VITE_WEB3FORMS_ACCESS_KEY: ${{ secrets.WEB3FORMS_ACCESS_KEY }}
         run: npm run build
         working-directory: team-site
 
@@ -52,6 +53,7 @@ jobs:
           fi
           printf '{"team":"%s","commit":"%s","release":"%s","deploy_time":"%s","marker":"T07","feature_flag":{"name":"FEATURE_SHOW_INSIGHTS","enabled":%s},"FEATURE_SHOW_INSIGHTS":%s}' "$TEAM_SLUG" "$GITHUB_SHA" "$GITHUB_RUN_ID" "$DEPLOY_TIME" "$IS_ENABLED" "$IS_ENABLED" > team-site/dist/status/index.html
           cp team-site/server.js team-site/dist/
+          cp team-site/auth.js team-site/dist/
           cp team-site/package.json team-site/dist/
 
       - name: Upload dist artifact
