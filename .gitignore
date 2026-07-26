@@ -4,6 +4,7 @@ portal/.portal-data
 .DS_Store
 .env
 .env.*
+!.env.example
 !.env.local.example
 !portal/.env.local.example
 npm-debug.log*
