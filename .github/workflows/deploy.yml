@@ -80,11 +80,12 @@ jobs:
       - name: Request deploy from organizer deployer
         env:
           DEPLOYER_DISPATCH_TOKEN: ${{ secrets.DEPLOYER_DISPATCH_TOKEN }}
-          DEPLOYER_REPO: knurdz/deploy-sprint-deployer
+          DEPLOYER_REPO: ${{ vars.DEPLOYER_REPO || 'knurdz/deploy-sprint-deployer' }}
           TEAM_REPO: ${{ github.repository }}
           TEAM_SHA: ${{ steps.request.outputs.sha }}
           TEAM_BRANCH: ${{ steps.request.outputs.branch }}
           SOURCE_RUN_ID: ${{ steps.request.outputs.source_run_id }}
+          TEAM_SLUG: ${{ vars.TEAM_SLUG || 'placeholder-team-slug' }}
         run: |
           set -euo pipefail
 
@@ -97,10 +98,11 @@ jobs:
           import json
           import os
 
+          team_slug = os.environ.get("TEAM_SLUG", "placeholder-team-slug")
           payload = {
-              "event_type": "team-mahasona-squad-main-merged",
+              "event_type": f"team-{team_slug}-main-merged",
               "client_payload": {
-                  "team": "mahasona-squad",
+                  "team": team_slug,
                   "repo": os.environ["TEAM_REPO"],
                   "sha": os.environ["TEAM_SHA"],
                   "branch": os.environ["TEAM_BRANCH"],
