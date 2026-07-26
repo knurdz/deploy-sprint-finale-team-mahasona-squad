@@ -8,7 +8,8 @@
     "build": "tsc --noEmit && vite build",
     "preview": "node server.js",
     "start": "node server.js",
-    "lint": "tsc --noEmit"
+    "lint": "tsc --noEmit",
+    "test": "node scripts/check-release-readiness.mjs"
   },
   "dependencies": {
     "lucide-react": "^1.23.0",
