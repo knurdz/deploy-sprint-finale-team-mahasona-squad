@@ -1,4 +1,3 @@
-// AI-REVIEW-MARKER: participant must manually remove this marker
 import http from 'http';
 import https from 'https';
 import fs from 'fs';
