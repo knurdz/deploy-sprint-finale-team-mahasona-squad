@@ -22,8 +22,14 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "20"
-          cache: npm
-          cache-dependency-path: team-site/package-lock.json
+
+      - name: Cache npm dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-npm-${{ hashFiles('team-site/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-npm-
 
       - name: Install dependencies
         run: npm ci
@@ -62,6 +68,8 @@ jobs:
           echo "| **PR Number** | #${{ github.event.pull_request.number || 'N/A' }} |" >> $GITHUB_STEP_SUMMARY
           echo "| **Commit SHA** | \`${{ github.sha }}\` |" >> $GITHUB_STEP_SUMMARY
           echo "| **Preview Artifact** | \`pr-preview-${{ github.event.pull_request.number || github.sha }}\` |" >> $GITHUB_STEP_SUMMARY
+          echo "| **Cache Key Source** | \`team-site/package-lock.json\` |" >> $GITHUB_STEP_SUMMARY
+          echo "| **Install Command** | \`npm ci\` (Deterministic Lockfile Install) |" >> $GITHUB_STEP_SUMMARY
           echo "| **Environment** | PR Preview (Isolated from Production) |" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "> Production deployment is kept separate and only triggers upon merging into the \`main\` branch." >> $GITHUB_STEP_SUMMARY
