@@ -1,0 +1,13 @@
+name: Leaky debug rehearsal
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  debug:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "Seeded token DEPLOY_SPRINT_TEST_TOKEN_T23_DO_NOT_USE should not be printed in real workflows"
