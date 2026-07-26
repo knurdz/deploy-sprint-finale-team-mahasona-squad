@@ -1,0 +1,92 @@
+name: Manual Rollback Workflow
+
+on:
+  workflow_dispatch:
+    inputs:
+      release_ref:
+        description: "Known-good release reference (commit SHA or Git tag to rollback to)"
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: request-organizer-deploy
+  cancel-in-progress: false
+
+jobs:
+  rollback:
+    name: Execute Rollback
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Checkout known-good release reference
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.release_ref }}
+          fetch-depth: 0
+
+      - name: Verify release ref commit SHA
+        id: get_sha
+        run: |
+          set -euo pipefail
+          TARGET_SHA=$(git rev-parse HEAD)
+          echo "Target commit SHA resolved to: ${TARGET_SHA}"
+          echo "target_sha=${TARGET_SHA}" >> "$GITHUB_OUTPUT"
+
+      - name: Request deploy from organizer deployer
+        env:
+          DEPLOYER_DISPATCH_TOKEN: ${{ secrets.DEPLOYER_DISPATCH_TOKEN }}
+          DEPLOYER_REPO: knurdz/deploy-sprint-deployer
+          TEAM_REPO: ${{ github.repository }}
+          TEAM_SHA: ${{ steps.get_sha.outputs.target_sha }}
+          TEAM_BRANCH: "main"
+          SOURCE_RUN_ID: ${{ github.run_id }}
+        run: |
+          set -euo pipefail
+
+          if [ -z "$DEPLOYER_DISPATCH_TOKEN" ]; then
+            echo "DEPLOYER_DISPATCH_TOKEN is not configured."
+            exit 1
+          fi
+
+          python3 - <<'PY' > payload.json
+          import json
+          import os
+
+          payload = {
+              "event_type": "team-mahasona-squad-main-merged",
+              "client_payload": {
+                  "team": "mahasona-squad",
+                  "repo": os.environ["TEAM_REPO"],
+                  "sha": os.environ["TEAM_SHA"],
+                  "branch": os.environ["TEAM_BRANCH"],
+                  "source_run_id": os.environ["SOURCE_RUN_ID"],
+              },
+          }
+
+          print(json.dumps(payload))
+          PY
+
+          curl --fail-with-body --show-error --silent \
+            -X POST \
+            -H "Accept: application/vnd.github+json" \
+            -H "Authorization: Bearer ${DEPLOYER_DISPATCH_TOKEN}" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            "https://api.github.com/repos/${DEPLOYER_REPO}/dispatches" \
+            --data @payload.json
+
+          echo "Requested organizer rollback deployment for ${TEAM_REPO}@${TEAM_SHA}."
+
+      - name: Record Rollback Evidence in Job Summary
+        run: |
+          {
+            echo "##  Rollback Execution Manifest"
+            echo "- **Input Release Ref:** `${{ inputs.release_ref }}`"
+            echo "- **Resolved Target Commit SHA:** `${{ steps.get_sha.outputs.target_sha }}`"
+            echo "- **Triggered By:** `@${{ github.actor }}`"
+            echo "- **Workflow Run ID:** `${{ github.run_id }}`"
+            echo "- **Status:** Deployment request dispatched successfully."
+          } >> "$GITHUB_STEP_SUMMARY"
