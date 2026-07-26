@@ -7,10 +7,10 @@ export type DeadlineCard = {
 
 export const deadlineCards: DeadlineCard[] = [
   {
-    id: 'repo-setup-checkpoint',
-    label: 'Repo setup checkpoint',
-    due: 'Friday 20:00',
-    action: 'Verify your assigned repository, remotes, and all challenge branches before feature work.',
+    id: 'merge-conflict-lab',
+    label: 'Merge conflict lab',
+    due: 'Saturday 10:00',
+    action: 'Resolve the deadline clash while preserving both dashboard changes.',
   },
   {
     id: 'review',
